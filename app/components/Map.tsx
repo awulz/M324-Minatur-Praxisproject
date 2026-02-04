@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
+import { useState, useEffect } from 'react'
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { LatLngExpression, icon } from 'leaflet'
 
@@ -30,17 +30,38 @@ function MapClickHandler({ onLocationSelect }: { onLocationSelect: (lat: number,
   return null
 }
 
-interface MapProps {
-  onLocationSelect?: (location: { lat: number; lng: number }) => void
+function MapController({ centerTo }: { centerTo?: { lat: number; lng: number } | null }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (centerTo) {
+      map.flyTo([centerTo.lat, centerTo.lng], 12, {
+        duration: 1.5,
+      })
+    }
+  }, [centerTo, map])
+
+  return null
 }
 
-export default function Map({ onLocationSelect }: MapProps) {
+interface MapProps {
+  onLocationSelect?: (location: { lat: number; lng: number }) => void
+  centerTo?: { lat: number; lng: number } | null
+}
+
+export default function Map({ onLocationSelect, centerTo }: MapProps) {
   const [markerPosition, setMarkerPosition] = useState<LatLngExpression | null>(null)
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setMarkerPosition([lat, lng])
     onLocationSelect?.({ lat, lng })
   }
+
+  useEffect(() => {
+    if (centerTo) {
+      setMarkerPosition([centerTo.lat, centerTo.lng])
+    }
+  }, [centerTo])
 
   return (
     <MapContainer
@@ -54,6 +75,7 @@ export default function Map({ onLocationSelect }: MapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MapClickHandler onLocationSelect={handleLocationSelect} />
+      <MapController centerTo={centerTo} />
       {markerPosition && <Marker position={markerPosition} icon={defaultIcon} />}
     </MapContainer>
   )

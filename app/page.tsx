@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import SearchBar from './components/SearchBar'
+import { GeocodingResult } from './lib/geocoding'
 
 const Map = dynamic(() => import('./components/Map'), {
   ssr: false,
@@ -14,6 +16,13 @@ const Map = dynamic(() => import('./components/Map'), {
 
 export default function Home() {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
+
+  const handleCitySelect = (city: GeocodingResult) => {
+    const location = { lat: city.latitude, lng: city.longitude }
+    setSelectedLocation(location)
+    setMapCenter(location)
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
@@ -26,6 +35,11 @@ export default function Home() {
           <p className="text-xl text-blue-700">
             Click on the map or search a Swiss city
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-6xl mx-auto mb-6 flex justify-center">
+          <SearchBar onCitySelect={handleCitySelect} />
         </div>
 
         {/* Selected Location Info */}
@@ -47,7 +61,10 @@ export default function Home() {
             id="map"
             className="w-full h-[600px] bg-white rounded-lg shadow-xl border-2 border-blue-200 overflow-hidden"
           >
-            <Map onLocationSelect={setSelectedLocation} />
+            <Map 
+              onLocationSelect={setSelectedLocation}
+              centerTo={mapCenter}
+            />
           </div>
         </div>
       </div>
