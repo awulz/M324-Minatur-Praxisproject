@@ -30,11 +30,16 @@ function MapClickHandler({ onLocationSelect }: { onLocationSelect: (lat: number,
   return null
 }
 
-export default function Map() {
+interface MapProps {
+  onLocationSelect?: (location: { lat: number; lng: number }) => void
+}
+
+export default function Map({ onLocationSelect }: MapProps) {
   const [markerPosition, setMarkerPosition] = useState<LatLngExpression | null>(null)
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setMarkerPosition([lat, lng])
+    onLocationSelect?.({ lat, lng })
   }
 
   return (
