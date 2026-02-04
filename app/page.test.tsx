@@ -14,9 +14,9 @@ describe('Home Page', () => {
     expect(subtitle).toBeInTheDocument()
   })
 
-  it('renders the map placeholder', () => {
+  it('renders the map loading state', () => {
     render(<Home />)
-    const mapPlaceholder = screen.getByText('Map will load here')
+    const mapPlaceholder = screen.getByText('Loading map...')
     expect(mapPlaceholder).toBeInTheDocument()
   })
 

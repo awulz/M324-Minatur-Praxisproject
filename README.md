@@ -7,6 +7,8 @@ Interactive weather map application for Swiss cities with automated CI/CD pipeli
 - **Next.js 15** - App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
+- **Leaflet** - Interactive maps
+- **react-leaflet** - React integration for Leaflet
 - **Jest** - Testing framework
 - **React Testing Library** - Component testing
 - **GitHub Actions** - CI/CD automation
@@ -26,6 +28,16 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Features
+
+### Interactive Map
+
+- Leaflet map centered on Switzerland
+- Click anywhere on the map to place a marker
+- Selected coordinates are displayed below the title
+- OpenStreetMap tiles for map rendering
+- Dynamic import to avoid SSR issues
 
 ## Testing
 
@@ -61,6 +73,8 @@ All PRs must pass these checks before merging to main.
 │   └── workflows/
 │       └── ci.yml           # GitHub Actions CI workflow
 ├── app/
+│   ├── components/
+│   │   └── Map.tsx          # Leaflet map component
 │   ├── globals.css          # Tailwind CSS imports
 │   ├── layout.tsx           # Root layout
 │   ├── page.tsx             # Home page

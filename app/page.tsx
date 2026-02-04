@@ -1,9 +1,25 @@
+'use client'
+
+import { useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const Map = dynamic(() => import('./components/Map'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <p className="text-gray-400 text-lg">Loading map...</p>
+    </div>
+  ),
+})
+
 export default function Home() {
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null)
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-6xl font-bold text-blue-900 mb-4">
             Swiss Weather App
           </h1>
@@ -12,16 +28,29 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Map Placeholder */}
+        {/* Selected Location Info */}
+        {selectedLocation && (
+          <div className="max-w-6xl mx-auto mb-4">
+            <div className="bg-white rounded-lg shadow-md border border-blue-200 px-4 py-3">
+              <p className="text-sm text-gray-600">
+                Selected Location: <span className="font-semibold text-blue-900">
+                  {selectedLocation.lat.toFixed(4)}°N, {selectedLocation.lng.toFixed(4)}°E
+                </span>
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Map Container */}
         <div className="max-w-6xl mx-auto">
           <div
             id="map"
-            className="w-full h-[600px] bg-white rounded-lg shadow-xl border-2 border-blue-200 flex items-center justify-center"
+            className="w-full h-[600px] bg-white rounded-lg shadow-xl border-2 border-blue-200 overflow-hidden"
           >
-            <p className="text-gray-400 text-lg">Map will load here</p>
+            <Map onLocationSelect={setSelectedLocation} />
           </div>
         </div>
       </div>
     </main>
-  );
+  )
 }
