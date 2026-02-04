@@ -30,7 +30,7 @@ function MapClickHandler({ onLocationSelect }: { onLocationSelect: (lat: number,
   return null
 }
 
-function MapController({ centerTo }: { centerTo: { lat: number; lng: number } | null }) {
+function MapController({ centerTo }: { centerTo?: { lat: number; lng: number } | null }) {
   const map = useMap()
 
   useEffect(() => {
