@@ -9,6 +9,8 @@ Interactive weather map application for Swiss cities with automated CI/CD pipeli
 - **Tailwind CSS** - Styling
 - **Leaflet** - Interactive maps
 - **react-leaflet** - React integration for Leaflet
+- **Open-Meteo API** - Weather data and geocoding
+- **lucide-react** - Weather icons
 - **Jest** - Testing framework
 - **React Testing Library** - Component testing
 - **GitHub Actions** - CI/CD automation
@@ -34,10 +36,27 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Interactive Map
 
 - Leaflet map centered on Switzerland
-- Click anywhere on the map to place a marker
-- Selected coordinates are displayed below the title
+- Click anywhere on the map to place a marker and fetch weather
+- Smooth fly-to animation when selecting a city
 - OpenStreetMap tiles for map rendering
 - Dynamic import to avoid SSR issues
+
+### City Search
+
+- Search bar with autocomplete for Swiss cities
+- Powered by Open-Meteo Geocoding API
+- Debounced search (300ms) to reduce API calls
+- Max 5 city suggestions displayed
+- Click city to center map and fetch weather
+
+### Weather Display
+
+- **Current Weather Card**: Temperature, weather condition, humidity, wind speed
+- **24-Hour Forecast**: Hourly temperature and weather icons
+- **7-Day Forecast**: Daily min/max temperatures with weather conditions
+- Weather data from Open-Meteo Forecast API (icon_ch model)
+- Beautiful lucide-react weather icons
+- Automatic fetch when location is selected
 
 ## Testing
 
@@ -74,7 +93,12 @@ All PRs must pass these checks before merging to main.
 │       └── ci.yml           # GitHub Actions CI workflow
 ├── app/
 │   ├── components/
-│   │   └── Map.tsx          # Leaflet map component
+│   │   ├── Map.tsx          # Leaflet map component
+│   │   ├── SearchBar.tsx    # City search with autocomplete
+│   │   └── WeatherDisplay.tsx # Weather data display
+│   ├── lib/
+│   │   ├── geocoding.ts     # Geocoding API utilities
+│   │   └── weather.ts       # Weather API utilities
 │   ├── globals.css          # Tailwind CSS imports
 │   ├── layout.tsx           # Root layout
 │   ├── page.tsx             # Home page
