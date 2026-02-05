@@ -1,5 +1,7 @@
 # Swiss Weather App
 
+[![CI](https://github.com/WandaMaxCH/M324-Minatur-Praxisproject/actions/workflows/ci.yml/badge.svg)](https://github.com/WandaMaxCH/M324-Minatur-Praxisproject/actions/workflows/ci.yml)
+
 Interactive weather map application for Swiss cities with automated CI/CD pipeline.
 
 ## Tech Stack
@@ -85,6 +87,45 @@ Configuration: `.github/workflows/ci.yml`
 
 All PRs must pass these checks before merging to main.
 
+### Continuous Deployment
+
+Automatic deployment to Netlify on merge to main:
+- Configured via `netlify.toml`
+- Uses `@netlify/plugin-nextjs` for optimized Next.js builds
+- Environment variables managed in Netlify dashboard
+
+## Deployment
+
+### Deploy to Netlify
+
+1. **Connect Repository:**
+   - Sign in to [Netlify](https://www.netlify.com/)
+   - Click "Add new site" → "Import an existing project"
+   - Connect your GitHub repository
+
+2. **Configure Build Settings:**
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+   - The `netlify.toml` file will automatically configure these
+
+3. **Set Environment Variables:**
+   - Go to Site configuration → Environment variables
+   - Add: `NEXT_PUBLIC_APP_NAME` = `Swiss Weather App`
+
+4. **Deploy:**
+   - Click "Deploy site"
+   - Every push to main will automatically deploy
+
+### Environment Variables
+
+Required environment variables:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_APP_NAME` | Application name displayed in footer | Swiss Weather App |
+
+**Note:** Open-Meteo API requires no API keys.
+
 ## Project Structure
 
 ```
@@ -93,6 +134,7 @@ All PRs must pass these checks before merging to main.
 │       └── ci.yml           # GitHub Actions CI workflow
 ├── app/
 │   ├── components/
+│   │   ├── Footer.tsx       # Footer with env variable
 │   │   ├── Map.tsx          # Leaflet map component
 │   │   ├── SearchBar.tsx    # City search with autocomplete
 │   │   └── WeatherDisplay.tsx # Weather data display
@@ -103,8 +145,10 @@ All PRs must pass these checks before merging to main.
 │   ├── layout.tsx           # Root layout
 │   ├── page.tsx             # Home page
 │   └── page.test.tsx        # Home page tests
+├── .env.local.example       # Example environment variables
 ├── jest.config.ts           # Jest configuration
 ├── jest.setup.ts            # Jest setup file
+├── netlify.toml             # Netlify deployment config
 ├── tailwind.config.ts       # Tailwind configuration
 ├── tsconfig.json            # TypeScript configuration
 └── package.json             # Dependencies and scripts
@@ -126,3 +170,18 @@ All PRs must pass these checks before merging to main.
 - `npm test` - Run tests
 - `npm test:watch` - Run tests in watch mode
 - `npm run lint` - Run ESLint
+
+## APIs Used
+
+- **Open-Meteo Forecast API** - Weather data (no API key required)
+- **Open-Meteo Geocoding API** - Swiss city search (no API key required)
+
+## License
+
+M324 School Project - CI/CD Pipeline Implementation
+
+## Credits
+
+- Weather data: [Open-Meteo](https://open-meteo.com/)
+- Map tiles: [OpenStreetMap](https://www.openstreetmap.org/)
+- Icons: [Lucide React](https://lucide.dev/)
