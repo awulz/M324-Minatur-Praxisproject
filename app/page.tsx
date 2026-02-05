@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import SearchBar from './components/SearchBar'
+import WeatherDisplay from './components/WeatherDisplay'
 import { GeocodingResult } from './lib/geocoding'
+import { fetchWeather, WeatherData } from './lib/weather'
 
 const Map = dynamic(() => import('./components/Map'), {
   ssr: false,
@@ -17,11 +19,29 @@ const Map = dynamic(() => import('./components/Map'), {
 export default function Home() {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false)
+  const [cityName, setCityName] = useState<string>('')
 
-  const handleCitySelect = (city: GeocodingResult) => {
+  const handleLocationSelect = async (location: { lat: number; lng: number }) => {
+    setSelectedLocation(location)
+    setIsLoadingWeather(true)
+    
+    const weatherData = await fetchWeather(location.lat, location.lng)
+    setWeather(weatherData)
+    setIsLoadingWeather(false)
+  }
+
+  const handleCitySelect = async (city: GeocodingResult) => {
     const location = { lat: city.latitude, lng: city.longitude }
     setSelectedLocation(location)
     setMapCenter(location)
+    setCityName(city.name)
+    setIsLoadingWeather(true)
+    
+    const weatherData = await fetchWeather(location.lat, location.lng)
+    setWeather(weatherData)
+    setIsLoadingWeather(false)
   }
 
   return (
@@ -56,17 +76,33 @@ export default function Home() {
         )}
 
         {/* Map Container */}
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto mb-8">
           <div
             id="map"
             className="w-full h-[600px] bg-white rounded-lg shadow-xl border-2 border-blue-200 overflow-hidden"
           >
             <Map 
-              onLocationSelect={setSelectedLocation}
+              onLocationSelect={handleLocationSelect}
               centerTo={mapCenter}
             />
           </div>
         </div>
+
+        {/* Weather Display */}
+        {isLoadingWeather && (
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-white rounded-xl shadow-xl p-8 text-center">
+              <div className="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-gray-600">Loading weather data...</p>
+            </div>
+          </div>
+        )}
+
+        {!isLoadingWeather && weather && (
+          <div className="max-w-6xl mx-auto">
+            <WeatherDisplay weather={weather} cityName={cityName} />
+          </div>
+        )}
       </div>
     </main>
   )
